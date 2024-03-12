@@ -1,0 +1,103 @@
+#include<stdio.h>
+struct sparse{
+    int rno;
+    int cno;
+    int value;
+};
+void ReadSparseMatrix(struct sparse s[]){
+    int a,b;
+    printf("Enter the dimension of the matrix: \n");
+    scanf("%d %d",&a,&b);
+    int arr[a][b];
+    printf("Enter entries of matrix:  \n");
+    for(int i=0;i<a;i++){
+        for(int j=0;j<b;j++){
+            scanf("%d",&arr[i][j]);
+        }
+    }
+    s[0].rno=a;
+    s[0].cno=b;
+    int nz=0,k=1;
+
+    for(int i=0;i<a;i++){
+        for(int j=0;j<b;j++){
+            if(arr[i][j]!=0){
+                s[k].rno=i;
+                s[k].cno=j;
+                s[k].value=arr[i][j];
+                nz++;
+                k++;
+            }
+        }
+    }
+    s[0].value=nz;
+}
+void PrintSparseMatrix(struct sparse s[]){
+    int a=s[0].rno;
+    int b=s[0].cno;
+    int k=1;
+    for(int i=0;i<a;i++){
+        for(int j=0;j<b;j++){
+            if(i==s[k].rno&&j==s[k].cno){
+                printf("%d ",s[k].value);
+                k++;
+            }
+            else{
+                printf("%d ",0);
+            }
+        }
+        printf("\n");
+    }
+}
+void TransposeSparseMatrix(struct sparse s1[],struct sparse s2[]){
+        int a=s1[0].rno;
+        int b=s1[0].cno;
+        s2[0].rno=b;
+        s2[0].cno=a;
+        s2[0].value = s1[0].value;
+        int c[a];
+        int m[b];
+        for(int i=0;i<a;i++){
+            c[i]=0;
+        }
+        for(int i=0;i<=s1[0].value;i++){
+            c[s1[i].cno]++;
+        }
+        m[0]=1;
+        for(int i=1;i<b;i++){
+            m[i]=m[i-1]+c[i-1];
+        }
+        for(int i=1;i<=s1[0].value;i++){
+            int j=m[s1[i].cno];
+            s2[j].rno=s1[i].cno;
+            s2[j].cno=s1[i].rno;
+            s2[j].value=s1[i].value;
+            m[s1[i].cno]++;
+        }
+}
+
+int main(){
+    struct sparse sparsemat1[30],sparsemat2[30];
+    while(1){
+    printf("Menu : \n");
+    printf("1) Form a sparse Matrix from normal Matrix \n2) Print normal matrix from sparse matrix \n3) Print the transpose \n4) Exit \n");
+    printf("Enter the Choice \n\n");
+    int x;
+    scanf("%d",&x);
+    if(x==1){
+        ReadSparseMatrix(sparsemat1);
+    }
+    else if(x==2){
+        PrintSparseMatrix(sparsemat1);
+        printf("\n");
+    }
+    else if(x==3){
+        TransponseSparseMatrix(sparsemat1,sparsemat2);
+        PrintSparseMatrix(sparsemat2);
+        printf("\n");
+    }
+    else{
+        break;
+    }
+    }
+}
